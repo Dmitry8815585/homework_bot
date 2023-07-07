@@ -8,6 +8,7 @@ from pathlib import Path
 import requests
 from dotenv import load_dotenv
 from telegram import Bot
+
 from exceptions import RequestFailedException
 
 BASE_DIR = Path(__file__).resolve().parent.parent
