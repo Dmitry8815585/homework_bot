@@ -1,14 +1,14 @@
 import logging
 import os
-import time
-from pathlib import Path
 import sys
+import time
+from enum import Enum
+from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
 from telegram import Bot
-
-from enum import Enum
+from exceptions import RequestFailedException
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,12 +28,6 @@ HOMEWORK_VERDICTS = {
     'reviewing': 'Работа взята на проверку ревьюером.',
     'rejected': 'Работа проверена: у ревьюера есть замечания.'
 }
-
-
-class MyException(Exception):
-    """My exception."""
-
-    pass
 
 
 class Token(Enum):
@@ -79,7 +73,7 @@ def get_api_answer(timestamp):
             }
         )
         if homework_statuses.status_code != 200:
-            raise MyException(
+            raise RequestFailedException(
                 f'API request failed:'
                 f' {homework_statuses.status_code}'
             )
@@ -87,7 +81,7 @@ def get_api_answer(timestamp):
         return homework
 
     except requests.exceptions.RequestException as error:
-        raise MyException from error(f'API request failed: {error}')
+        raise RequestFailedException from error(f'API request failed: {error}')
 
 
 def parse_status(homework: dict) -> str:
@@ -122,9 +116,9 @@ def send_message(bot, message):
 
 def main():
     """The main logic of the bot."""
-    last_message_sent = None
     try:
         check_tokens()
+        last_message_sent = None
     except ValueError as error:
         logging.critical(f'Environment  variable {error} not found')
         sys.exit(1)
@@ -142,12 +136,15 @@ def main():
                     if message != last_message_sent:
                         send_message(bot, message)
                         last_message_sent = message
-                timestamp = response['current_date']
+            timestamp = response['current_date']
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
+            response_type = type(
+                response
+            ).__name__ if 'response' in locals() else 'Unknown'
             logging.error(
                 f'Main function faild: {error}\n',
-                f' type of your response is: {type(response)}'
+                f' type of your response is: {response_type}'
             )
             if message != last_message_sent:
                 send_message(bot, message)
