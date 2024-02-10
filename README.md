@@ -1,5 +1,7 @@
 # Проект telegram bot
-## Стек: Python, Django, DRF, Telegramm
+## Стек навыков проекта "homework_bot"
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) ![Telegram API](https://img.shields.io/badge/Telegram_API-26A5E4?style=for-the-badge&logo=telegram&logoColor=white) ![Logging](https://img.shields.io/badge/Logging-292929?style=for-the-badge&logo=logging&logoColor=white) ![API Requests](https://img.shields.io/badge/API_Requests-009688?style=for-the-badge&logo=requests&logoColor=white)
+
 
 “homework_bot” это telegram-бот, который обращаться к API сервиса, узнает статус выполненной работы и отправляет уведомления, если он изменился.
  
